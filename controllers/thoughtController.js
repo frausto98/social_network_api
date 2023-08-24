@@ -3,7 +3,7 @@ const {User, Thought} = require('../models');
 module.exports = {
     async getAllThoughts(req, res) {
         try {
-            const dbThoughtData = await Thought.find({});
+            const dbThoughtData = await Thought.find({}).populate('reactions');
             res.json(dbThoughtData);
         } catch (err) {
             console.log(err);
@@ -12,7 +12,7 @@ module.exports = {
     },
     async getSingleThought(req, res) {
         try {
-            const dbThoughtData = await Thought.findOne({ _id: req.params.id });
+            const dbThoughtData = await Thought.findOne({ _id: req.params.id }).populate('reactions');
             if (!dbThoughtData) {
                 res.status(404).json({ message: 'No thought found with this id!' });
                 return;
