@@ -25,8 +25,14 @@ module.exports = {
     },
     async createThought(req, res) {
         try {
-            const dbThoughtData = await Thought.create({thoughtText: req.body});
-            res.json(dbThoughtData);
+            const dbThoughtData = await Thought.create(req.body);
+            const dbUserData = await User.findOneAndUpdate(
+                { _id: req.body.userId }, 
+                { $push: { thoughts: dbThoughtData._id }},
+                { new: true }
+                )
+
+            res.json(dbUserData);
         } catch (err) {
             console.log(err);
             res.status(500).json(err);
@@ -36,7 +42,7 @@ module.exports = {
         try {
             const dbThoughtData = await Thought.findOneAndUpdate(
                 { _id: req.params.id },
-                {thoughtText: req.body},
+                {$set: req.body},
                 { new: true }
             );
             if (!dbThoughtData) {
@@ -57,6 +63,41 @@ module.exports = {
                 return;
             }
             res.json(dbThoughtData);
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    },
+    // add reactions?
+    async addReaction(req, res) {
+        try {
+            const dbThoughtData = await Thought.findOneAndUpdate(
+                { _id: req.params.id },
+                { $push: { reactions: req.body } },
+                { new: true }
+            )
+            if (!dbThoughtData) {
+                res.status(404).json({ message: 'No thought found with this id!' });
+                return;
+            }
+            res.status(200).json(dbThoughtData);
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    },
+    async deleteReaction(req, res) {
+        try {
+            const dbThoughtData = await Thought.findOneAndUpdate(
+                { _id: req.params.id },
+                {$pull: { reactions: {reactionId: req.params.reactionId} }},
+                {new: true}
+            )
+            if (!dbThoughtData) {
+                res.status(404).json({ message: 'No thought found with this id!' });
+                return;
+            }
+            res.status(200).json({message: 'Reaction deleted!'});
         } catch (err) {
             console.log(err);
             res.status(500).json(err);

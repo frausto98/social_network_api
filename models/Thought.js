@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const  { dateFormat } = require('../utils/helpers');
 const reactionSchema = require('./Reaction');
 
 // Schema to create a new Thought
@@ -13,14 +14,15 @@ const thoughtSchema = new Schema({
         type: Date,
         default: Date.now,
         // use a getter method to format the timestamp on query
-        // get: (createdAtTCT) => dateFormat(createdAtTCT)
+        get: (createdAtTCT) => dateFormat(createdAtTCT)
     },
     username: {
         type: String,
         required: true,
     },
     reactions: [reactionSchema],
-}, {
+}, 
+{
     toJSON: {
         virtuals: true,
     },
