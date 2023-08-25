@@ -90,7 +90,7 @@ module.exports = {
         try {
             const dbThoughtData = await Thought.findOneAndUpdate(
                 { _id: req.params.id },
-                {$pull: { reactions: {reactionId: req.params.reactionId} }},
+                {$pull: { reactions: {reactionID: req.params.reactionsId} }},
                 {new: true}
             )
             if (!dbThoughtData) {

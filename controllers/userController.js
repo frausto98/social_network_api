@@ -68,7 +68,7 @@ module.exports = {
         try {
             const dbUserData = await User.findOneAndUpdate(
                 { _id: req.params.id },
-                { $push: { friends: req.params.friendId } },
+                { $push: { friends: req.params.friendsId } },
                 { new: true }
             )
             if (!dbUserData) {
@@ -85,14 +85,14 @@ module.exports = {
         try {
             const dbUserData = await User.findOneAndUpdate(
                 { _id: req.params.id },
-                {$pull: { friends: req.params.friendId }},
+                {$pull: { friends: req.params.friendsId }},
                 {new: true}
             )
             if (!dbUserData) {
                 res.status(404).json({ message: 'No user found with this id!' });
                 return;
             }
-            res.status(200).json({message: "Friend deleted!"});
+            res.status(200).json(dbUserData);
         } catch (err) {
             console.log(err);
             res.status(500).json(err);
